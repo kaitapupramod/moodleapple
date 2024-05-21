@@ -23,6 +23,17 @@
  */
 
 $string['accountexists'] = 'A user already exists on this site with this username. If this is your account, log in by entering your username and password and add it as a linked login via your preferences page.';
+$string['appleexpiryreminder'] = 'Hi {$a->tousername},
+
+The Apple OAuth 2 service with the name \'{$a->clientname}\' is expiring today.
+
+Users using this service will no longer be able to access the site.
+Please renew the Apple client secret for continued access to Moodle using this service.
+
+Expires: {$a->expiry}
+
+{$a->managelink}';
+$string['appleexpiryremindersubject'] = 'Service expiry reminder for \'{$a->clientname}\'';
 $string['auth_oauth2description'] = 'OAuth 2 standards based authentication';
 $string['auth_oauth2settings'] = 'OAuth 2 authentication settings.';
 $string['confirmaccountemail'] = 'Hi {$a->fullname},
@@ -118,6 +129,7 @@ $string['privacy:metadata:auth_oauth2:timemodified'] = 'The timestamp when this 
 $string['privacy:metadata:auth_oauth2:userid'] = 'The ID of the user account which the OAuth 2 login is linked to.';
 $string['privacy:metadata:auth_oauth2:usermodified'] = 'The ID of the user who modified this account.';
 $string['privacy:metadata:auth_oauth2:username'] = 'The external username that maps to this account.';
+$string['taskappleexpiryreminder'] = 'Apple expiry reminder';
 $string['testidplogin'] = 'Test login with:';
 $string['userinfo'] = 'User data from provider:';
 $string['value'] = 'Value';
