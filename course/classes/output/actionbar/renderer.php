@@ -14,27 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-declare(strict_types=1);
-
-namespace core_reportbuilder;
-
-use moodle_exception;
+namespace core_course\output\actionbar;
 
 /**
- * Invalid report source exception
+ * Renderer class for the action bar.
  *
- * @package     core_reportbuilder
- * @copyright   2020 Paul Holden <paulh@moodle.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    core_course
+ * @copyright  2024 Shamim Rezaie <shamim@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class source_invalid_exception extends moodle_exception {
+class renderer extends \plugin_renderer_base {
 
     /**
-     * Constructor
+     * Renders the group selector trigger element in the action bar.
      *
-     * @param string $source
+     * @param group_selector $groupselector The group selector object.
+     * @return string The HTML output.
      */
-    public function __construct(string $source) {
-        parent::__construct('errorsourceinvalid', 'reportbuilder', '', null, $source);
+    protected function render_group_selector(group_selector $groupselector) {
+        $data = $groupselector->export_for_template($this);
+        return parent::render_from_template($groupselector->get_template(), $data);
     }
 }

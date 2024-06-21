@@ -16,18 +16,18 @@
 
 declare(strict_types=1);
 
-namespace core_reportbuilder;
+namespace core_reportbuilder\exception;
 
 use moodle_exception;
 
 /**
- * Unavailable report source exception
+ * Invalid report source exception
  *
  * @package     core_reportbuilder
  * @copyright   2020 Paul Holden <paulh@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class source_unavailable_exception extends moodle_exception {
+class source_invalid_exception extends moodle_exception {
 
     /**
      * Constructor
@@ -35,6 +35,6 @@ class source_unavailable_exception extends moodle_exception {
      * @param string $source
      */
     public function __construct(string $source) {
-        parent::__construct('errorsourceunavailable', 'reportbuilder', '', null, $source);
+        parent::__construct('errorsourceinvalid', 'reportbuilder', '', null, $source);
     }
 }
