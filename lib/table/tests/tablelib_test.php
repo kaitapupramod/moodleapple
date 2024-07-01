@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace core;
+namespace core_table;
 
-use flexible_table;
 use testable_flexible_table;
 
 defined('MOODLE_INTERNAL') || die();
@@ -28,10 +27,11 @@ require_once($CFG->libdir . '/tests/fixtures/testable_flexible_table.php');
 /**
  * Test some of tablelib.
  *
- * @package    core
+ * @package    core_table
  * @category   test
  * @copyright  2013 Damyon Wiese <damyon@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \flexible_table
  */
 class tablelib_test extends \advanced_testcase {
     protected function generate_columns($cols) {
@@ -796,9 +796,6 @@ class tablelib_test extends \advanced_testcase {
 
     /**
      * Data test for set and render caption for table.
-     *
-     * @covers ::set_caption_for_table
-     * @covers ::render_caption_for_table
      */
     public function test_set_and_render_caption_for_table(): void {
         $data = $this->generate_data(10, 2);
