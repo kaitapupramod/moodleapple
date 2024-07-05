@@ -27753,7 +27753,10 @@ table.calendartable caption {
   section:not(#region-main) .block.block_calendar_month .maincalendar .calendarwrapper .previous,
   section:not(#region-main) .block.block_calendar_month .maincalendar .calendarwrapper .next {
     width: 30%;
-    font-size: 0.8em;
+  }
+  section:not(#region-main) .block.block_calendar_month .maincalendar .calendarwrapper .previous .arrow_text,
+  section:not(#region-main) .block.block_calendar_month .maincalendar .calendarwrapper .next .arrow_text {
+    display: none;
   }
   section:not(#region-main) .block.block_calendar_month .maincalendar .calendartable.calendarmonth th,
   section:not(#region-main) .block.block_calendar_month .maincalendar .calendartable.calendarmonth td {
@@ -34761,6 +34764,12 @@ img.userpicture {
   background-color: #fff;
 }
 
+.path-mod-assign .gradingtable thead tr {
+  position: sticky;
+  top: 60px;
+  z-index: 1;
+}
+
 /**
  * Mod LTI.
  */
@@ -34977,6 +34986,26 @@ img.userpicture {
   margin-left: 0;
 }
 
+#page-report-outline-index .font-lg {
+  font-size: 1.03125rem;
+}
+
+#page-report-outline-index .generaltable tbody tr {
+  background-color: #fff;
+}
+#page-report-outline-index .generaltable tbody tr.section {
+  padding-left: 2rem;
+}
+#page-report-outline-index .generaltable tbody tr.section h3 {
+  font-size: 1.171875rem;
+}
+#page-report-outline-index .generaltable tbody tr.section h4 {
+  font-size: 1.03125rem;
+}
+#page-report-outline-index .generaltable tbody td.delegated {
+  padding-left: 3.5rem;
+}
+
 .path-backup .mform {
   /* These are long labels with checkboxes on the right. */
 }
@@ -34993,6 +35022,18 @@ img.userpicture {
   margin-bottom: 1.25rem;
 }
 .path-backup .mform .grouped_settings.section_level::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+.path-backup .mform .grouped_settings.subsection_level {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1.25rem;
+  margin: 0 1.25rem 1.25rem 1.25rem;
+}
+.path-backup .mform .grouped_settings.subsection_level::after {
   display: block;
   clear: both;
   content: "";
