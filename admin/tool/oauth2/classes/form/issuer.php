@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use stdClass;
 use core\form\persistent;
+use html_writer;
+use Firebase\JWT\JWT;
 
 /**
  * Issuer form.
@@ -104,9 +106,11 @@ class issuer extends persistent {
 
         // Client Secret.
         $mform->addElement('text', 'clientsecret', get_string('issuerclientsecret', 'tool_oauth2'));
-        $mform->addRule('clientsecret', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('clientsecret', 'issuerclientsecret', 'tool_oauth2');
-
+        // Remove character length restrictions for Apple oauth.
+        if ($this->type && $this->type != 'apple') {
+            $mform->addRule('clientsecret', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+        }
         // Use basic authentication.
         $mform->addElement('advcheckbox', 'basicauth', get_string('usebasicauth', 'tool_oauth2'));
         $mform->addHelpButton('basicauth', 'usebasicauth', 'tool_oauth2');
@@ -222,6 +226,30 @@ class issuer extends persistent {
         if ($this->type) {
             // Set servicetype if it's defined.
             $mform->getElement('servicetype')->setValue($this->type);
+        }
+        // Display the Apple client secret expiry.
+        if ($mform->getElementValue('servicetype') == 'apple') {
+            $clientsecret = $mform->getElementValue('clientsecret');
+
+            $content = explode('.', $clientsecret);
+            if (isset($content[1])) {
+                $configuration = JWT::jsonDecode(JWT::urlsafeB64Decode($content[1]));
+
+                if (isset($configuration->exp)) {
+                    $date = userdate($configuration->exp, get_string('strftimedatetimeshort'));
+                    if ($configuration->exp < time()) {
+                        // Expired.
+                        $expiredtext = get_string('expiredontext', 'tool_oauth2', $date);
+                        $expiredtext = html_writer::span($expiredtext, 'text-danger');
+                    } else {
+                        // Still valid.
+                        $expiredtext = get_string('expiresontext', 'tool_oauth2', $date);
+                    }
+
+                    $expirynote = $mform->createElement('static', 'expirynote', '', $expiredtext);
+                    $mform->insertElementBefore($expirynote, 'basicauth');
+                }
+            }
         }
     }
 

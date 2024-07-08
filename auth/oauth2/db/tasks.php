@@ -15,15 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Definition of oauth2 scheduled tasks.
  *
  * @package    auth_oauth2
- * @copyright  2017 Damyon Wiese
+ * @copyright  2023 eabyas
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024051000;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2024041600;        // Requires this Moodle version.
-$plugin->component = 'auth_oauth2';       // Full name of the plugin (used for diagnostics).
+$tasks = [
+    [
+        'classname' => '\auth_oauth2\task\apple_expiry_reminder',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => '0',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
+];
