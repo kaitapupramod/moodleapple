@@ -65,12 +65,23 @@ function subsection_add_instance($moduleinstance, $mform = null) {
 
     $id = $DB->insert_record('subsection', $moduleinstance);
 
+    // Due to name collision, when the object came from the form, the availability conditions are called
+    // availabilityconditionsjson instead of availability.
+    $cmavailability = $moduleinstance->availabilityconditionsjson ?? $moduleinstance->availability ?? null;
+    // Availability could be an empty string but we need to force null.
+    if (empty($cmavailability)) {
+        $cmavailability = null;
+    }
+
     formatactions::section($moduleinstance->course)->create_delegated(
         manager::PLUGINNAME,
         $id,
         (object)[
             'name' => $moduleinstance->name,
-        ]);
+            'visible' => $moduleinstance->visible,
+            'availability' => $cmavailability,
+        ]
+    );
 
     return $id;
 }
@@ -90,6 +101,18 @@ function subsection_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
+
+    // Due to name collision, when the object came from the form, the availability conditions are called
+    // availabilityconditionsjson instead of availability.
+    $cmavailability = $moduleinstance->availabilityconditionsjson ?? $moduleinstance->availability ?? null;
+    if (!empty($cmavailability)) {
+        $DB->set_field(
+            'course_sections',
+            'availability',
+            $cmavailability,
+            ['component' => manager::PLUGINNAME, 'itemid' => $moduleinstance->id]
+        );
+    }
 
     return $DB->update_record('subsection', $moduleinstance);
 }
@@ -242,4 +265,29 @@ function subsection_cm_info_view(cm_info $cm) {
     $delegatedsectionoutput = new $outputclass($format, $delegatedsection);
 
     $cm->set_content($renderer->render($delegatedsectionoutput), true);
+}
+
+/**
+ * Add a get_coursemodule_info function to add 'extra' information for the course (see resource).
+ *
+ * Given a course_module object, this function returns any "extra" information that may be needed
+ * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
+ *
+ * @param stdClass $coursemodule The coursemodule object (record).
+ * @return cached_cm_info|bool An object on information that the courses will know about. False if not found.
+ */
+function subsection_get_coursemodule_info(stdClass $coursemodule): cached_cm_info|bool {
+    global $DB;
+
+    $dbparams = ['component' => 'mod_subsection', 'itemid' => $coursemodule->instance];
+    if (! $delegatedsection = $DB->get_record('course_sections', $dbparams, 'id, name')) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+    $result->name = $delegatedsection->name;
+
+    $result->customdata['sectionid'] = $delegatedsection->id;
+
+    return $result;
 }

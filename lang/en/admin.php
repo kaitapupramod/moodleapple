@@ -75,9 +75,7 @@ $string['alternativefullnameformat_desc'] = 'This defines how names are shown to
 $string['always'] = 'Always';
 $string['appearance'] = 'Appearance';
 $string['aspellpath'] = 'Path to aspell';
-$string['asyncbackupdisabled'] = 'Your site is currently configured to use synchronous backups. Asynchronous backups provide a better user experience.
-Asynchronous backups will be enabled for all sites from Moodle LMS 4.5 LTS.
-Synchronous backups will be removed from Moodle LMS the version after 4.5 LTS';
+$string['asyncbackupdisabled'] = 'Your site is currently configured to use synchronous backups. Asynchronous backups provide a better user experience, allowing users to do other operations while a backup or restore is in progress. Asynchronous backups are enabled for all sites from Moodle 4.5 LTS. Synchronous backups will be removed from Moodle LMS the version after 4.5 LTS.';
 $string['authentication'] = 'Authentication';
 $string['authpreventaccountcreation'] = 'Prevent account creation when authenticating';
 $string['authpreventaccountcreation_help'] = 'When a user authenticates, an account on the site is automatically created if it doesn\'t yet exist. If an external database, such as LDAP, is used for authentication, but you wish to restrict access to the site to users with an existing account only, then this option should be enabled. New accounts will need to be created manually or via the upload users feature. Note that this setting doesn\'t apply to MNet authentication.';
@@ -447,7 +445,7 @@ $string['courselistshortnames_desc'] = 'If enabled, course short names will be d
 $string['coursemgmt'] = 'Manage courses and categories';
 $string['courseoverview'] = 'Course overview';
 $string['courserequestnotify'] = 'Course request notification';
-$string['courserequestnotifyemail'] = '{$a->user} requested a new course <a href="{$a->link}">{$a->link}</a>';
+$string['courserequestnotifyemail'] = 'User {$a->user} requested a new course at <a href="{$a->link}">{$a->link}</a>.';
 $string['courserequests'] = 'Course requests';
 $string['courserequestspending'] = 'Pending course requests';
 $string['courses'] = 'Courses';
@@ -815,7 +813,9 @@ $string['locationsettings'] = 'Location settings';
 $string['locked'] = 'Locked';
 $string['lockoutduration'] = 'Account lockout duration';
 $string['lockoutduration_desc'] = 'Locked out account is automatically unlocked after this duration.';
-$string['lockoutemailbody'] = 'Your account with username {$a->username} on server \'{$a->sitename}\'
+$string['lockoutemailbody'] = 'Hi {$a->firstname},
+
+Your account with username {$a->username} on server \'{$a->sitename}\'
 was locked out after multiple invalid login attempts.
 
 To unlock the account immediately go to the following address
@@ -1140,13 +1140,8 @@ $string['recaptchaprivatekey'] = 'ReCAPTCHA secret key';
 $string['recaptchapublickey'] = 'ReCAPTCHA site key';
 $string['register'] = 'Register your site';
 $string['registration'] = 'Registration';
-$string['registration_help'] = 'By registering:
-
-* You will receive security alerts
-* You can activate mobile app push notifications from your site
-* You are contributing to our Moodle statistics of the worldwide community';
-$string['registrationwarning'] = 'Your site is not yet registered.';
-$string['registrationwarningcontactadmin'] = 'Your site is not yet registered. Please notify your administrator.';
+$string['registrationwarning'] = 'Don\'t miss out on important updates and security alerts.';
+$string['registrationwarningcontactadmin'] = 'This site is not registered. Please ask your administrator to register the site so they don\'t miss out on important updates.';
 $string['releasenoteslink'] = 'For information about this version of Moodle, please see the online <a target="_blank" href="{$a}">Release Notes</a>';
 $string['rememberuserlicensepref'] = 'Remember user licence preference';
 $string['rememberuserlicensepref_help'] = 'If enabled, the last licence selected by the user is preselected when uploading a file in the file picker. Otherwise, the default site licence is preselected.';
@@ -1352,6 +1347,7 @@ $string['supportemailsubject'] = 'Site support request - {$a}';
 $string['supportavailability'] = 'Support availability';
 $string['supportname'] = 'Support name';
 $string['supportpage'] = 'Contact site support link';
+$string['swaggerui'] = 'Moodle REST API UI (SwaggerUI)';
 $string['suspenduser'] = 'Suspend user account';
 $string['switchlang'] = 'Switch lang directory';
 $string['systempaths'] = 'System paths';
@@ -1656,3 +1652,10 @@ $string['moodlepartners_help'] = '<p>Moodle Partners are services providers that
 <a href="https://moodle.com/partners">Find a Partner</a>';
 $string['moodleservices'] = 'Moodle services';
 $string['moodleservices_help'] = 'Make sure you get the best from your Moodle learning environment by using these Moodle services:';
+
+// Deprecated since Moodle 4.5.
+$string['registration_help'] = 'By registering:
+
+* You will receive security alerts
+* You can activate mobile app push notifications from your site
+* You are contributing to our Moodle statistics of the worldwide community';

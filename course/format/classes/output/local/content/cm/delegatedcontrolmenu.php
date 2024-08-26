@@ -121,9 +121,70 @@ class delegatedcontrolmenu extends basecontrolmenu {
             ];
         }
 
+        // Hide/Show uses module functionality.
+        // Hide/Show options will be available for subsections inside visible sections only.
+        $parentsection = $cm->get_section_info();
+        $availablevisibility = has_capability('moodle/course:sectionvisibility', $coursecontext, $user) && $parentsection->visible;
+        if ($availablevisibility) {
+            $url = clone($baseurl);
+            if (!is_null($sectionreturn)) {
+                $url->param('sr', $format->get_sectionid());
+            }
+            $strhidefromothers = get_string('hidefromothers', 'format_' . $course->format);
+            $strshowfromothers = get_string('showfromothers', 'format_' . $course->format);
+            if ($section->visible) { // Show the hide/show eye.
+                $url->param('hide', $section->section);
+                $controls['visiblity'] = [
+                    'url' => $url,
+                    'icon' => 'i/show',
+                    'name' => $strhidefromothers,
+                    'pixattr' => ['class' => ''],
+                    'attr' => [
+                        'class' => 'editing_showhide',
+                        'data-sectionreturn' => $sectionreturn,
+                        'data-action' => ($usecomponents) ? 'sectionHide' : 'hide',
+                        'data-id' => $section->id,
+                        'data-swapname' => $strshowfromothers,
+                        'data-swapicon' => 'i/show',
+                    ],
+                ];
+            } else {
+                $url->param('show', $section->section);
+                $controls['visiblity'] = [
+                    'url' => $url,
+                    'icon' => 'i/hide',
+                    'name' => $strshowfromothers,
+                    'pixattr' => ['class' => ''],
+                    'attr' => [
+                        'class' => 'editing_showhide',
+                        'data-sectionreturn' => $sectionreturn,
+                        'data-action' => ($usecomponents) ? 'sectionShow' : 'show',
+                        'data-id' => $section->id,
+                        'data-swapname' => $strhidefromothers,
+                        'data-swapicon' => 'i/hide',
+                    ],
+                ];
+            }
+        }
+
+        // Only show the move link if we are not already in the section view page.
+        // Move (only for component compatible formats).
+        if (!$isheadersection && $hasmanageactivities && $usecomponents) {
+            $controls['move'] = [
+                'url'   => new moodle_url('/course/mod.php', ['copy' => $cm->id]),
+                'icon' => 'i/dragdrop',
+                'name' => get_string('move'),
+                'pixattr' => ['class' => ''],
+                'attr' => [
+                    'class' => 'editing_movecm ',
+                    'data-action' => 'moveCm',
+                    'data-id' => $cm->id,
+                ],
+            ];
+        }
+
         // Delete deletes the module.
-        // Only show the view link if we are not already in the section view page.
-        if (!$isheadersection && $hasmanageactivities) {
+        if ($hasmanageactivities) {
             $url = clone($cmbaseurl);
             $url->param('delete', $cm->id);
             $url->param('sr', $cm->sectionnum);

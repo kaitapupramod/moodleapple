@@ -20,7 +20,9 @@ use behat_admin;
 use behat_data_generators;
 use behat_base;
 use behat_course;
+use behat_general;
 use behat_user;
+use core\attribute_helper;
 use Behat\Gherkin\Parser;
 use Behat\Gherkin\Lexer;
 use Behat\Gherkin\Keywords\ArrayKeywords;
@@ -74,6 +76,12 @@ class runner {
         if (!class_exists('Behat\Gherkin\Lexer')) {
             throw new \moodle_exception('Missing behat classes.');
         }
+
+        // Behat constant.
+        if (!defined('BEHAT_TEST')) {
+            define('BEHAT_TEST', 1);
+        }
+
         // Behat utilities.
         require_once($CFG->libdir . '/behat/classes/util.php');
         require_once($CFG->libdir . '/behat/classes/behat_command.php');
@@ -82,6 +90,7 @@ class runner {
         require_once("{$CFG->dirroot}/admin/tests/behat/behat_admin.php");
         require_once("{$CFG->dirroot}/course/lib.php");
         require_once("{$CFG->dirroot}/course/tests/behat/behat_course.php");
+        require_once("{$CFG->dirroot}/lib/tests/behat/behat_general.php");
         require_once("{$CFG->dirroot}/user/tests/behat/behat_user.php");
         return true;
     }
@@ -93,13 +102,22 @@ class runner {
         $this->generator = new behat_data_generators();
         $this->validsteps = $this->scan_generator($this->generator);
 
-        // Set config values is not inside the general behat generators.
-        $extra = $this->scan_method(
-            new ReflectionMethod(behat_admin::class, 'the_following_config_values_are_set_as_admin'),
-            new behat_admin(),
-        );
-        if ($extra) {
-            $this->validsteps[$extra->given] = $extra;
+        // Add some extra steps from other classes.
+        $extrasteps = [
+            [behat_admin::class, 'the_following_config_values_are_set_as_admin'],
+            [behat_general::class, 'i_enable_plugin'],
+            [behat_general::class, 'i_disable_plugin'],
+        ];
+        foreach ($extrasteps as $callable) {
+            $classname = $callable[0];
+            $method = $callable[1];
+            $extra = $this->scan_method(
+                new ReflectionMethod($classname, $method),
+                new $classname(),
+            );
+            if ($extra) {
+                $this->validsteps[$extra->given] = $extra;
+            }
         }
     }
 
@@ -122,6 +140,14 @@ class runner {
         if ($extra) {
             $this->validsteps[$extra->given] = $extra;
         }
+    }
+
+    /**
+     * Get all valid steps.
+     * @return array the valid steps.
+     */
+    public function get_valid_steps(): array {
+        return array_values($this->validsteps);
     }
 
     /**
@@ -153,11 +179,17 @@ class runner {
         if (!$given) {
             return null;
         }
-        return (object)[
+        $result = (object)[
             'given' => $given,
             'name' => $method->getName(),
             'generator' => $behatclass,
+            'example' => null,
         ];
+        $reference = $method->getDeclaringClass()->getName() . '::' . $method->getName();
+        if ($attribute = attribute_helper::instance($reference, \core\attribute\example::class)) {
+            $result->example = (string) $attribute->example;
+        }
+        return $result;
     }
 
     /**

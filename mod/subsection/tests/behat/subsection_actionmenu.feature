@@ -33,12 +33,11 @@ Feature: The module menu replaces the delegated section menu
     And I should not see "Assign roles"
     And I should not see "Highlight"
     And I should see "Edit settings"
-    # Duplicate, Move and Show/Hide are not implemented yet.
     And I should not see "Move"
+    # Duplicate is not implemented yet.
     And I should not see "Duplicate"
-    And I should not see "Hide"
-    # Delete option for subsection page is not implemented yet.
-    And I should not see "Delete"
+    And I should see "Hide"
+    And I should see "Delete"
     And I should see "Permalink"
 
   @javascript
@@ -50,12 +49,11 @@ Feature: The module menu replaces the delegated section menu
     And I should not see "Highlight"
     And I should see "View"
     And I should see "Edit settings"
-    # Duplicate, Move and Show/Hide are not implemented yet.
-    And I should not see "Move"
+    And I should see "Move"
+    # Duplicate is not implemented yet.
     And I should not see "Duplicate"
-    And I should not see "Hide"
+    And I should see "Hide"
     And I should see "Delete"
-    And I should see "Permalink"
 
   @javascript
   Scenario: The action menu for subsection module in section page has less options than a regular activity
@@ -67,10 +65,10 @@ Feature: The module menu replaces the delegated section menu
     And I should not see "Highlight"
     And I should see "View"
     And I should see "Edit settings"
-    # Duplicate, Move and Show/Hide are not implemented yet.
-    And I should not see "Move"
+    And I should see "Move"
+    # Duplicate is not implemented yet.
     And I should not see "Duplicate"
-    And I should not see "Hide"
+    And I should see "Hide"
     And I should see "Delete"
     And I should see "Permalink"
 
@@ -145,15 +143,98 @@ Feature: The module menu replaces the delegated section menu
     And "Subsection3" "link" should exist
     And I open "Subsection1" actions menu
     When I choose "Delete" in the open action menu
-    And I click on "Delete" "button" in the "Delete activity?" "dialogue"
+    And I click on "Delete" "button" in the "Delete subsection?" "dialogue"
     And "Subsection1" "link" should not exist in the "#region-main-box" "css_element"
     And I am on the "C1 > Section 1" "course > section" page
     # Section page. Open Subsection2 module action menu.
     And I open "Subsection2" actions menu
     And I choose "Delete" in the open action menu
-    And I click on "Delete" "button" in the "Delete activity?" "dialogue"
+    And I click on "Delete" "button" in the "Delete subsection?" "dialogue"
     And "Subsection2" "link" should not exist in the "#region-main-box" "css_element"
     And I am on the "C1 > Subsection3" "course > section" page
     # Subsection page. Open the section header action menu.
     And I click on "Edit" "icon" in the "[data-region='header-actions-container']" "css_element"
-    And "Delete" "link" should not exist in the "[data-region='header-actions-container']" "css_element"
+    And I choose "Delete" in the open action menu
+    And I click on "Delete" "button" in the "Delete subsection?" "dialogue"
+    And I should not see "Subsection3"
+    And I should see "Course 1" in the "h1" "css_element"
+
+  @javascript
+  Scenario: Hide/Show option in subsection action menu
+    Given I turn editing mode on
+    And I should not see "Hidden from students"
+    And I open "Subsection1" actions menu
+    When I choose "Hide" in the open action menu
+    Then I should see "Hidden from students"
+    Given I am on the "C1 > Subsection1" "course > section" page
+    And I should see "Hidden from students"
+    # Subsection page. Open the section header action menu.
+    And I click on "Edit" "icon" in the "[data-region='header-actions-container']" "css_element"
+    And I choose "Show" in the open action menu
+    And I should not see "Hidden from students"
+    And I click on "Section 1" "link" in the ".breadcrumb" "css_element"
+    And I should not see "Hidden from students"
+    # Section page. Open Subsection1 module action menu.
+    And I open "Subsection1" actions menu
+    And I choose "Hide" in the open action menu
+    And I should see "Hidden from students"
+
+  @javascript
+  Scenario: Hide/Show option in course page action menu for subsections
+    Given I am on the "C1" "Course" page
+    And I turn editing mode on
+    When I hide section "Subsection1"
+    Then I should see "Hidden from students"
+    And I show section "Subsection1"
+    And I should not see "Hidden from students"
+
+  @javascript
+  Scenario: Hide/Show option in subsection page action menu for subsections
+    Given I am on the "C1 > Subsection1" "course > section" page
+    And I turn editing mode on
+    When I hide section "Subsection1"
+    Then I should see "Hidden from students"
+    And I show section "Subsection1"
+    And I should not see "Hidden from students"
+
+  @javascript
+  Scenario: Subsections can't change visibility in hidden sections.
+    Given I am on the "C1" "Course" page
+    And I turn editing mode on
+    And I hide section "Section 1"
+    When I open section "Subsection1" edit menu
+    Then I should not see "Hide"
+    And I should not see "Show"
+    And I am on the "C1 > Section 1" "course > section" page
+    And I open section "Subsection1" edit menu
+    And I should not see "Hide"
+    And I should not see "Show"
+
+  @javascript
+  Scenario: Move option in subsection action menu
+    Given the following "activities" exist:
+      | activity   | course | idnumber    | name        | intro            | section |
+      | subsection | C1     | subsection2 | Subsection2 | Test Subsection2 | 1       |
+    And I turn editing mode on
+    And I open "Subsection1" actions menu
+    When I choose "Move" in the open action menu
+    And I should see "Move Subsection1 after" in the "Move subsection" "dialogue"
+    # Can't be moved inside same subsection.
+    And I click on "Subsection1" "link" in the "Move subsection" "dialogue"
+    And I should see "Move Subsection1 after" in the "Move subsection" "dialogue"
+    # Can't be moved inside other subsection.
+    And I click on "Subsection2" "link" in the "Move subsection" "dialogue"
+    And I should see "Move Subsection1 after" in the "Move subsection" "dialogue"
+    # Can be moved to other position.
+    And I click on "General" "link" in the "Move subsection" "dialogue"
+    Then I should not see "Move Subsection1 after"
+    And I should see "Subsection1" in the "General" "section"
+    And I should not see "Subsection1" in the "Section 1" "section"
+    # Section page. Subsection is still content, so Move option should exist.
+    And I am on the "C1 > Section 1" "course > section" page
+    And I open "Subsection2" actions menu
+    And I should see "Move"
+    # Subsection page. Move option should not exist.
+    And I am on the "C1 > Subsection1" "course > section" page
+    And I click on "Edit" "icon" in the "[data-region='header-actions-container']" "css_element"
+    And "Move" "link" should not exist in the "[data-region='header-actions-container']" "css_element"

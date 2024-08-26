@@ -1342,7 +1342,7 @@ class block_manager {
 
             $controls[] = new action_menu_link_secondary(
                 $editactionurl,
-                new pix_icon('t/edit', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
+                new pix_icon('i/settings', $str, 'moodle', ['class' => 'iconsmall', 'title' => '']),
                 $str,
                 [
                     'class' => 'editing_edit',
@@ -1726,22 +1726,17 @@ class block_manager {
      * Convenience function to check whether a block is implementing a secondary nav class and return it
      * initialised to the calling function
      *
-     * @todo MDL-74939 Remove support for old 'local\views\secondary' class location
      * @param block_base $block
      * @return \core\navigation\views\secondary
      */
     protected function get_secondarynav(block_base $block): \core\navigation\views\secondary {
         $class = "core_block\\navigation\\views\\secondary";
+
+        // Check whether block defines its own secondary navigation.
         if (class_exists("block_{$block->name()}\\navigation\\views\\secondary")) {
             $class = "block_{$block->name()}\\navigation\\views\\secondary";
-        } else if (class_exists("block_{$block->name()}\\local\\views\\secondary")) {
-            // For backwards compatibility, support the old location for this class (it was in a
-            // 'local' namespace which shouldn't be used for core APIs).
-            debugging("The class block_{$block->name()}\\local\\views\\secondary uses a deprecated " .
-                    "namespace. Please move it to block_{$block->name()}\\navigation\\views\\secondary.",
-                    DEBUG_DEVELOPER);
-            $class = "block_{$block->name()}\\local\\views\\secondary";
         }
+
         $secondarynav = new $class($this->page);
         $secondarynav->initialise();
         return $secondarynav;
@@ -2156,7 +2151,8 @@ function block_instance($blockname, $instance = NULL, $page = NULL) {
 function block_load_class($blockname) {
     global $CFG;
 
-    if(empty($blockname)) {
+    $blocknameclean = clean_param($blockname, PARAM_PLUGIN);
+    if (empty($blockname) || empty($blocknameclean)) {
         return false;
     }
 

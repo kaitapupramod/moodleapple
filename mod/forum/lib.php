@@ -5633,7 +5633,7 @@ function forum_get_courses_user_posted_in($user, $discussionsonly = false, $incl
  * @param int $limitnum The number of records to return
  * @return array An array of forums the user has posted within in the provided courses
  */
-function forum_get_forums_user_posted_in($user, array $courseids = null, $discussionsonly = false, $limitfrom = null, $limitnum = null) {
+function forum_get_forums_user_posted_in($user, ?array $courseids = null, $discussionsonly = false, $limitfrom = null, $limitnum = null) {
     global $DB;
 
     if (!is_null($courseids)) {
@@ -6397,11 +6397,11 @@ function forum_can_create_attachment($forum, $context) {
  */
 function mod_forum_get_fontawesome_icon_map() {
     return [
-        'mod_forum:i/pinned' => 'fa-map-pin',
+        'mod_forum:i/pinned' => 'fa-thumbtack',
         'mod_forum:t/selected' => 'fa-check',
-        'mod_forum:t/subscribed' => 'fa-envelope-o',
-        'mod_forum:t/unsubscribed' => 'fa-envelope-open-o',
         'mod_forum:t/star' => 'fa-star',
+        'mod_forum:t/subscribed' => 'fa-regular fa-envelope',
+        'mod_forum:t/unsubscribed' => 'fa-regular fa-envelope-open',
     ];
 }
 

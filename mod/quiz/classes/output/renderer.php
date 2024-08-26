@@ -721,7 +721,7 @@ class renderer extends plugin_renderer_base {
     public function access_messages($messages) {
         $output = '';
         foreach ($messages as $message) {
-            $output .= html_writer::tag('p', $message, ['class' => 'text-left']);
+            $output .= html_writer::tag('p', $message, ['class' => 'text-start']);
         }
         return $output;
     }
@@ -951,7 +951,7 @@ class renderer extends plugin_renderer_base {
         if (!$viewobj->quizhasquestions) {
             $output .= html_writer::div(
                     $this->notification(get_string('noquestions', 'quiz'), 'warning', false),
-                    'text-left mb-3');
+                    'text-start mb-3');
         }
         $output .= $this->access_messages($viewobj->preventmessages);
 
@@ -975,7 +975,7 @@ class renderer extends plugin_renderer_base {
      * @return string HTML fragment.
      */
     public function start_attempt_button($buttontext, moodle_url $url,
-            preflight_check_form $preflightcheckform = null,
+            ?preflight_check_form $preflightcheckform = null,
             $popuprequired = false, $popupoptions = null) {
 
         $button = new single_button($url, $buttontext, 'post', single_button::BUTTON_PRIMARY);

@@ -180,6 +180,14 @@ $CFG->wwwroot   = 'http://example.com/moodle';
 
 $CFG->dataroot  = '/home/example/moodledata';
 
+// Whether the Moodle router is fully configured.
+//
+// From Moodle 4.5 this is set to false.
+// The default value will change in a future release.
+//
+// When not configured on the web server it must be accessed via https://example.com/moodle/r.php
+// When configured the on the web server the 'r.php' may be removed.
+$CFG->routerconfigured = false;
 
 //=========================================================================
 // 4. DATA FILES PERMISSIONS
@@ -328,7 +336,7 @@ $CFG->admin = 'admin';
 //
 //
 // Following settings may be used to select session driver, uncomment only one of the handlers.
-//   Database session handler (not compatible with MyISAM):
+//   Database session handler:
 //      $CFG->session_handler_class = '\core\session\database';
 //      $CFG->session_database_acquire_lock_timeout = 120;
 //
