@@ -48,8 +48,7 @@ class apple extends client {
                 // Clean the session variable containing the Apple oauth post content.
                 unset($SESSION->appleuserpostcontent);
             }
-            $userinfo['username'] = $userrecord->email;
-            $userinfo['email'] = $userrecord->email;
+            $userinfo['username'] = $userinfo['email'] = $userrecord->email;
             return $userinfo;
         }
         return false;
@@ -92,5 +91,4 @@ class apple extends client {
 
         return $userinfo;
     }
-
 }

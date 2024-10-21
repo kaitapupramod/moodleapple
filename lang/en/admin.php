@@ -75,7 +75,7 @@ $string['alternativefullnameformat_desc'] = 'This defines how names are shown to
 $string['always'] = 'Always';
 $string['appearance'] = 'Appearance';
 $string['appleexpiryreminder'] = 'Hi {$a->tousername},
-The Apple OAuth 2 service with the name \'{$a->clientname}\' is expiring today.
+The Apple OAuth 2 service with the name \'{$a->clientname}\' is expiring on {$a->expiry}.
 Users using this service will no longer be able to access the site.
 Please renew the Apple client secret for continued access to Moodle using this service.
 Expires: {$a->expiry}

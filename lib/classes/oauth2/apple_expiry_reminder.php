@@ -55,8 +55,9 @@ class apple_expiry_reminder extends scheduled_task {
 
                 if ($issuer->get('enabled') && $issuer->get('servicetype') === 'apple') {
                     $configuration = \core\oauth2\service\apple::get_expiry_information($issuer);
-                    // Send email reminder on date of expiry.
-                    if (date('d-m-Y', $configuration->exp) == date('d-m-Y', time())) {
+                    // Send email reminder on date of expiry or a week before.
+                    $expdate = date('d-m-Y', $configuration->exp);
+                    if ($expdate == date('d-m-Y', time()) || $expdate == date('d-m-Y', strtotime('-1 week'))) {
                         $stringhelper = new stdClass();
                         $stringhelper->clientid  = $issuer->get('id');
                         $stringhelper->clientname  = $issuer->get('name');

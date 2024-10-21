@@ -84,6 +84,13 @@ class apple extends openidconnect implements issuer_interface {
         }
         parent::process_configuration_json($issuer, $info);
     }
+
+    /**
+     * Decode the provided issuer's secret and return the defined configurations.
+     *
+     * @param issuer $issuer The OAuth issuer the endpoints should be discovered for.
+     * @param stdClass $info The discovery information, with the endpoints to process and create.
+     */
     public static function get_expiry_information(issuer $issuer) {
         $clientsecret = $issuer->get('clientsecret');
         $content = explode('.', $clientsecret);
