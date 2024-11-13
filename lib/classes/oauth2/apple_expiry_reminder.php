@@ -77,6 +77,42 @@ class apple_expiry_reminder extends scheduled_task {
         }
     }
 
+
+     /**
+     * Send expiry reminder email.
+     *
+     * @param \core\oauth2\issuer $issuer
+     * @return bool
+     */
+    public function send_expiry_reminder_email($issuer) {
+        global $CFG;
+        // Get list of all siteadmin users.
+        $siteadmins = explode(',', $CFG->siteadmins);
+        $configuration = \core\oauth2\service\apple::get_expiry_information($issuer);
+        // Send email reminder on date of expiry or a week before.
+        $expdate = date('d-m-Y', $configuration->exp);
+        $result = false;
+        if ($expdate == date('d-m-Y', time()) || $expdate == date('d-m-Y', strtotime('-1 week'))) {
+            $stringhelper = new stdClass();
+            $stringhelper->clientid  = $issuer->get('id');
+            $stringhelper->clientname  = $issuer->get('name');
+            $stringhelper->expiry  = userdate($configuration->exp, get_string('strftimedatetimeshort'));
+            $stringhelper->managelink  = $CFG->wwwroot . '/admin/tool/oauth2/issuers.php';
+            // Send message to each of our site admins.
+            if(!PHPUNIT_TEST) {
+                foreach ($siteadmins as $userid) {
+                    $touser = core_user::get_user($userid);
+                    if (!empty($touser)) {
+                        // Confirm each value supplied from issuers is saved into the user record.
+                        $this->send_user_message($touser, $stringhelper);
+                    }
+                }
+            }
+            $result = true;
+        }
+        return $result;
+    }
+
     /**
      * Sends emails to the users to warn of service expiry.
      *
