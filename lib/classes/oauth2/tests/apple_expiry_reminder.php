@@ -45,7 +45,7 @@ class apple_expiry_reminder extends \advanced_testcase {
         }
     }
     /**
-     * Test creating a user via the send apple expiry reminder email method.
+     * Test expiry reminder email via the send apple expiry reminder email method.
      *
      * @covers  \core\oauth2\apple_expiry_reminder::send_service_expiry_email
      */
@@ -54,40 +54,60 @@ class apple_expiry_reminder extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         
-        $expdates = [strtotime(date('Y-m-d', strtotime('-1 week'))), strtotime(date('Y-m-d', strtotime('+1 week')))];
+        // Set past expiry date.
+        $pastdate = strtotime('-1 week');
 
-        foreach ($expdates as $expdate) {
+        $secretkey = $this->generate_secretkey($pastdate);
 
-            // Set sample data to generate the secret key.
-            $tokeninfo = [];
-            $tokeninfo['iat'] = 'apple1';
-            $tokeninfo['exp'] = $expdate;
-            $tokeninfo['aud'] = 'https://appleid.apple.com';
-            $tokeninfo['sub'] = 'apple1';
+        // Set client id to issuer object.
+        $this->appleissuer->set('clientid', 'apple1');
 
-            // Generate sample secret ke.y
-            $secretkey = $this->getDataGenerator()->generate_sample_secretkey($tokeninfo);
+        // Set client secret to issuer object.
+        $this->appleissuer->set('clientsecret', $secretkey);
 
-            // Set client id to issuer object.
-            $this->appleissuer->set('clientid', 'apple1');
+        // Check service expiry email sent or not.
+        $ismailsent = (new \core\oauth2\apple_expiry_reminder)->send_expiry_reminder_email($this->appleissuer);
 
-            // Set client secret to issuer object.
-            $this->appleissuer->set('clientsecret', $secretkey);
+        // Confirm the reminder email sent.
+        $this->assertEquals(true, $ismailsent);
 
-            // Check service expiry email sent or not.
-            $ismailsent = (new \core\oauth2\apple_expiry_reminder)->send_expiry_reminder_email($this->appleissuer);
 
-            // Confirm expiry email sent.
-            if($ismailsent) {
-                $this->assertEquals(true, $ismailsent);
-            }
+        // Set future expiry date.
+        $futuredate = strtotime('+1 week');
 
-            // Confirm expiry email is not sent.
-            if(!$ismailsent) {
-                $this->assertEquals(false, $ismailsent);
-            }
+        $secretkey = $this->generate_secretkey($futuredate);
+        // Set client id to issuer object.
+        $this->appleissuer->set('clientid', 'apple1');
 
-        }
+        // Set client secret to issuer object.
+        $this->appleissuer->set('clientsecret', $secretkey);
 
+        // Check service expiry email sent or not.
+        $ismailsent = (new \core\oauth2\apple_expiry_reminder)->send_expiry_reminder_email($this->appleissuer);
+
+        // Confirm the reminder email is not sent.
+        $this->assertEquals(false, $ismailsent);
+
+    }
+
+    /**
+     * Generate secret key.
+     *
+     * @param int $date expiry date to generate the key.
+     * @return string
+     */
+    protected function generate_secretkey($date) {
+        global $DB;
+
+        // Set the sample data to generate the secret key.
+        $tokeninfo = [];
+        $tokeninfo['iat'] = 'apple1';
+        $tokeninfo['exp'] = $date;
+        $tokeninfo['aud'] = 'https://appleid.apple.com';
+        $tokeninfo['sub'] = 'apple1';
+
+        // Generate sample secret key
+        $secretkey = $this->getDataGenerator()->generate_sample_secretkey($tokeninfo);
+        return $secretkey;
     }
 }
