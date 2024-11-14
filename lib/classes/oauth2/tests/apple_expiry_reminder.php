@@ -114,13 +114,13 @@ class apple_expiry_reminder extends \advanced_testcase {
     /**
      * Create json encoded token.
      *
-     * @param   array $data The key information to process and create the secretkey.
+     * @param   array $data The key information to process and create the json encoded token.
      * @return  string
      */
     protected function create_json_encoded_token($data = []) {
-        $secretkey = \Firebase\JWT\JWT::urlsafeB64Encode(\Firebase\JWT\JWT::jsonEncode($data));
+        $generatedtoken = \Firebase\JWT\JWT::urlsafeB64Encode(\Firebase\JWT\JWT::jsonEncode($data));
         $parta = 'appletesta.';
         $partb = '.appletestb';
-        return $parta.$secretkey.$partb;
+        return $parta.$generatedtoken.$partb;
     }
 }
