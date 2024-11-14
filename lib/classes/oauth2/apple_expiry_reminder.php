@@ -54,24 +54,7 @@ class apple_expiry_reminder extends scheduled_task {
             foreach ($issuers as $issuer) {
 
                 if ($issuer->get('enabled') && $issuer->get('servicetype') === 'apple') {
-                    $configuration = \core\oauth2\service\apple::get_expiry_information($issuer);
-                    // Send email reminder on date of expiry or a week before.
-                    $expdate = date('d-m-Y', $configuration->exp);
-                    if ($expdate == date('d-m-Y', time()) || $expdate == date('d-m-Y', strtotime('-1 week'))) {
-                        $stringhelper = new stdClass();
-                        $stringhelper->clientid  = $issuer->get('id');
-                        $stringhelper->clientname  = $issuer->get('name');
-                        $stringhelper->expiry  = userdate($configuration->exp, get_string('strftimedatetimeshort'));
-                        $stringhelper->managelink  = $CFG->wwwroot . '/admin/tool/oauth2/issuers.php';
-
-                        // Send message to each of our site admins.
-                        foreach ($siteadmins as $userid) {
-                            $touser = core_user::get_user($userid);
-                            if (!empty($touser)) {
-                                $this->send_user_message($touser, $stringhelper);
-                            }
-                        }
-                    }
+                    $this->send_expiry_reminder_email($issuer);
                 }
             }
         }
@@ -86,8 +69,7 @@ class apple_expiry_reminder extends scheduled_task {
      */
     public function send_expiry_reminder_email($issuer) {
         global $CFG;
-        // Get list of all siteadmin users.
-        $siteadmins = explode(',', $CFG->siteadmins);
+
         $configuration = \core\oauth2\service\apple::get_expiry_information($issuer);
         // Send email reminder on date of expiry or a week before.
         $expdate = date('d-m-Y', $configuration->exp);
@@ -100,6 +82,8 @@ class apple_expiry_reminder extends scheduled_task {
             $stringhelper->managelink  = $CFG->wwwroot . '/admin/tool/oauth2/issuers.php';
             // Send message to each of our site admins.
             if(!PHPUNIT_TEST) {
+                // Get list of all siteadmin users.
+                $siteadmins = explode(',', $CFG->siteadmins);
                 foreach ($siteadmins as $userid) {
                     $touser = core_user::get_user($userid);
                     if (!empty($touser)) {
