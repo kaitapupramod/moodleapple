@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core\oauth2\tests;
-
+use \Firebase\JWT\JWT;
 /**
  * External core oauth2 API tests.
  *
@@ -118,7 +118,7 @@ class apple_expiry_reminder extends \advanced_testcase {
      * @return  string
      */
     protected function create_json_encoded_token($data = []) {
-        $generatedtoken = \Firebase\JWT\JWT::urlsafeB64Encode(\Firebase\JWT\JWT::jsonEncode($data));
+        $generatedtoken = JWT::urlsafeB64Encode(JWT::jsonEncode($data));
         $parta = 'appletesta.';
         $partb = '.appletestb';
         return $parta.$generatedtoken.$partb;
