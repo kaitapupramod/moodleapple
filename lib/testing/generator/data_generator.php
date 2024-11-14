@@ -1608,17 +1608,4 @@ EOD;
             "data generators yet. Class {$classname} not found.");
     }
 
-    /**
-     * Helper function used to generate sample secret key.
-     *
-     * @param   array $data The key information to process and create the secretkey.
-     * @return  string
-     */
-    public function generate_sample_secretkey($data = []) {
-        $secretkey = \Firebase\JWT\JWT::urlsafeB64Encode(\Firebase\JWT\JWT::jsonEncode($data));
-        $parta = 'appletesta.';
-        $partb = '.appletestb';
-        return $parta.$secretkey.$partb;
-    }
-
 }
