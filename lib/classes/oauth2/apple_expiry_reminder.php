@@ -61,7 +61,7 @@ class apple_expiry_reminder extends scheduled_task {
     }
 
 
-     /**
+    /**
      * Send expiry reminder email.
      *
      * @param \core\oauth2\issuer $issuer
@@ -94,6 +94,7 @@ class apple_expiry_reminder extends scheduled_task {
             }
             $result = true;
         }
+
         return $result;
     }
 
