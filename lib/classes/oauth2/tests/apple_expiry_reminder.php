@@ -47,7 +47,7 @@ class apple_expiry_reminder extends \advanced_testcase {
     /**
      * Test expiry reminder email via the send apple expiry reminder email method.
      *
-     * @covers  \core\oauth2\apple_expiry_reminder::send_service_expiry_email
+     * @covers  \core\oauth2\apple_expiry_reminder::send_expiry_reminder_email
      */
     public function test_send_apple_expiry_reminder_email(): void {
 
@@ -107,7 +107,20 @@ class apple_expiry_reminder extends \advanced_testcase {
         $tokeninfo['sub'] = 'apple1';
 
         // Generate sample secret key
-        $secretkey = $this->getDataGenerator()->generate_sample_secretkey($tokeninfo);
+        $secretkey = $this->create_json_encoded_token($tokeninfo);
         return $secretkey;
+    }
+
+    /**
+     * Create json encoded token.
+     *
+     * @param   array $data The key information to process and create the secretkey.
+     * @return  string
+     */
+    protected function create_json_encoded_token($data = []) {
+        $secretkey = \Firebase\JWT\JWT::urlsafeB64Encode(\Firebase\JWT\JWT::jsonEncode($data));
+        $parta = 'appletesta.';
+        $partb = '.appletestb';
+        return $parta.$secretkey.$partb;
     }
 }
