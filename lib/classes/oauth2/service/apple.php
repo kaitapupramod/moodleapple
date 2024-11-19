@@ -58,7 +58,7 @@ class apple extends openidconnect implements issuer_interface {
      * @return void
      */
     protected static function process_configuration_json(issuer $issuer, stdClass $info): void {
-        // Apple doesn't provide a userinfo endpoint, so user info must be fetched from the id_token, 
+        // Apple doesn't provide a userinfo endpoint, so user info must be fetched from the id_token,
         // which is retrieved using a refresh grant on the token endpoint.
         if (isset($info->token_endpoint)) {
             $record = (object) [
@@ -69,7 +69,7 @@ class apple extends openidconnect implements issuer_interface {
             $endpoint = new endpoint(0, $record);
             $endpoint->create();
         }
-        // Unset the user_info endpoint in case apple provides it as it is currently not available. 
+        // Unset the user_info endpoint in case apple provides it as it is currently not available.
         if (isset($info->userinfo_endpoint)) {
             unset($info->userinfo_endpoint);
         }
@@ -89,13 +89,13 @@ class apple extends openidconnect implements issuer_interface {
      * Decode the provided issuer's secret and return the defined configurations.
      *
      * @param issuer $issuer The OAuth issuer the endpoints should be discovered for.
-     * @param stdClass $info The discovery information, with the endpoints to process and create.
+     * @return stdClass $configuration Decoded token information.
      */
     public static function get_expiry_information(issuer $issuer) {
         $clientsecret = $issuer->get('clientsecret');
         $content = explode('.', $clientsecret);
         // Decoding the configuration set in the client secret info.
-        if (isset($content[1]) && !empty($content[1])){
+        if (isset($content[1]) && !empty($content[1])) {
             $configuration = JWT::jsonDecode(JWT::urlsafeB64Decode($content[1]));
         }
         return $configuration;

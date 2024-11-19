@@ -65,7 +65,7 @@ if (isset($params['sesskey']) and confirm_sesskey($params['sesskey'])) {
     // Apple passes back the user information only on the first hit to the oauth service.
     // This user information is stored in the $SESSION variable to capture the user information.
     $appleuserinfo = optional_param('user', '', PARAM_RAW);
-    if(!empty($appleuserinfo)) {
+    if (!empty($appleuserinfo)) {
         $parsedstate = [];
         parse_str($state, $parsedstate);
         if (isset($parsedstate['id']) && !empty($parsedstate['id'])) {

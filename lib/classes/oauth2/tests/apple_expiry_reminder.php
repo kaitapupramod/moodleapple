@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core\oauth2\tests;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 /**
  * External core oauth2 API tests.
  *
@@ -23,7 +23,6 @@ use \Firebase\JWT\JWT;
  * @copyright  2017 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \core\oauth2\apple_expiry_reminder
  */
 class apple_expiry_reminder extends \advanced_testcase {
 
@@ -47,13 +46,12 @@ class apple_expiry_reminder extends \advanced_testcase {
     /**
      * Test expiry reminder email via the send apple expiry reminder email method.
      *
-     * @covers  \core\oauth2\apple_expiry_reminder::send_expiry_reminder_email
      */
     public function test_send_apple_expiry_reminder_email(): void {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        
+
         // Set past expiry date.
         $pastdate = strtotime('-1 week');
 
@@ -70,7 +68,6 @@ class apple_expiry_reminder extends \advanced_testcase {
 
         // Confirm the reminder email sent.
         $this->assertEquals(true, $ismailsent);
-
 
         // Set future expiry date.
         $futuredate = strtotime('+1 week');
@@ -106,7 +103,7 @@ class apple_expiry_reminder extends \advanced_testcase {
         $tokeninfo['aud'] = 'https://appleid.apple.com';
         $tokeninfo['sub'] = 'apple1';
 
-        // Generate sample secret key
+        // Generate sample secret key.
         $secretkey = $this->create_json_encoded_token($tokeninfo);
         return $secretkey;
     }

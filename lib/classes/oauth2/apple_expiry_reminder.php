@@ -79,9 +79,9 @@ class apple_expiry_reminder extends scheduled_task {
             $stringhelper->clientid  = $issuer->get('id');
             $stringhelper->clientname  = $issuer->get('name');
             $stringhelper->expiry  = userdate($configuration->exp, get_string('strftimedatetimeshort'));
-            $stringhelper->managelink  = $CFG->wwwroot . '/admin/tool/oauth2/issuers.php';
+            $stringhelper->managelink  = $CFG->wwwroot.'/admin/tool/oauth2/issuers.php';
             // Send message to each of our site admins.
-            if(!PHPUNIT_TEST) {
+            if (!PHPUNIT_TEST) {
                 // Get list of all siteadmin users.
                 $siteadmins = explode(',', $CFG->siteadmins);
                 foreach ($siteadmins as $userid) {
